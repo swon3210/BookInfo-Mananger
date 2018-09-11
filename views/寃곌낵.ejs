@@ -1,0 +1,29 @@
+
+<% include ./nav.ejs %>
+<main class="page blog-post-list">
+    <section class="clean-block clean-blog-list dark">
+        <div class="container">
+            <div class="block-heading">
+                <h2 class="text-info"><%= table_selected + '리스트' %></h2>
+            </div>
+            <div class="block-content">
+                <% for(var i=0; i<data_arr.length; i++){ %>
+                <div class="clean-blog-post">
+                    <div class="row">
+                        <div class="col-lg-5"><img class="rounded img-fluid" src="img/tech/image4.jpg"></div>
+                        <div class="col-lg-7">
+                            <h3><%= '제목 : ' + data_arr[i].title %></h3>
+                            <br />
+                            <h5><%= '저자 : ' + data_arr[i].author %></h5>
+                            <br />
+                            <p><%= 'ISBM : ' + data_arr[i].ISBM %></p>
+                            <br />
+                            <a class="btn btn-outline-primary btn-sm" href=<%= 'detail/' + table_selected + '/' + data_arr[i].id %>>상세 정보</a>
+                        </div>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</main>
