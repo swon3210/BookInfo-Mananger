@@ -1,14 +1,29 @@
-<nav class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar">
-    <% include ./dropDown.ejs %>
-    <div class="container"><button class="navbar-toggler" data-toggle="collapse" data-target="#navcol-1"><span class="sr-only">Toggle navigation</span><span class="navbar-toggler-icon"></span></button>
-        <div class="collapse navbar-collapse"
-            id="navcol-1">
-            <ul class="nav navbar-nav ml-auto">
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/input/bookdata">입력</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/search/bookdata">검색</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link active" href="/result/bookdata">결과</a></li>
-                <li class="nav-item" role="presentation"><a class="nav-link" href="/manage/bookdata">관리</a></li>
-            </ul>
-        </div>
+<nav
+  class="navbar navbar-light navbar-expand-lg fixed-top bg-white clean-navbar"
+>
+  <div class="container">
+    <button
+      class="navbar-toggler"
+      data-toggle="collapse"
+      data-target="#navcol-1"
+    >
+      <span class="sr-only">Toggle navigation</span
+      ><span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navcol-1">
+      <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" href="/search">검색</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active" href="/inquire/book"
+            >책 조회하기(동적 생성)</a
+          >
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link" href="/manage/table_list">관리</a>
+        </li>
+      </ul>
     </div>
+  </div>
 </nav>
