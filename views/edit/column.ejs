@@ -3,15 +3,35 @@
   <section class="clean-block clean-form">
     <div class="container">
       <div class="block-heading">
-        <h2 class="text-info">열 수정</h2>
+        <h2 class="text-info">수정할 열의 정보를 입력해주세요</h2>
       </div>
-      <form method="post" action="/update/bookdata">
+      <form
+        method="post"
+        action="<%= `/edit/column/${table_name}/${column_name}` %>"
+      >
         <div class="form-group">
-          <label class="text-center"></label>
-          <input class="form-control" type="text" name="" />
+          <label class="text-center">열 이름</label>
+          <input
+            class="form-control"
+            type="text"
+            name="column_name"
+            value="<%= column_name %>"
+          />
         </div>
         <div class="form-group">
-          <input class="btn btn-primary btn-block" type="submit" />
+          <label class="text-center">열 타입</label>
+          <select class="custom-select" name="column_type">
+            <option selected value="TEXT">TEXT</option>
+            <!-- <option value="INT">INT</option>
+            <option value="DATE">DATE</option> -->
+          </select>
+        </div>
+        <div class="form-group">
+          <input
+            class="btn btn-primary btn-block"
+            type="submit"
+            value="생성하기"
+          />
         </div>
       </form>
     </div>

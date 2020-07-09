@@ -25,8 +25,9 @@
                     <%= table_item %>
                   </td>
                   <td class="text-center">
-                    <a class="btn btn-success" href=<%= "/manage/table/" + table_item %>>조회</a>
-                    <a class="btn btn-danger" href=<%= "/manage/table/delete/" + table_item %>>삭제</a>
+                    <a class="btn btn-success" href="<%= `/manage/table/${table_item}` %>">조회<a>
+                      <a class="btn btn-primary" href="<%= `/edit/table/${table_item}` %>">수정<a></a>
+                    <a class="btn btn-danger" href="<%= `/delete/table/${table_item}` %>">삭제<a>
                   </td>
                 </tr>
                 <% } %>

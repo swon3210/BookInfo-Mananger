@@ -5,18 +5,17 @@
       <div class="block-heading">
         <h2 class="text-info">생성할 열의 정보를 입력해주세요</h2>
       </div>
-      <form method="post" action="/input/create">
+      <form method="post" action="<%= `/input/column/${table_name}` %>">
         <div class="form-group">
-          <label class="text-center">필드 이름</label>
-          <input class="form-control" type="text" name="" />
+          <label class="text-center">열 이름</label>
+          <input class="form-control" type="text" name="column_name" />
         </div>
         <div class="form-group">
-          <label class="text-center">필드 타입</label>
-          <select class="custom-select">
-            <option selected>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
+          <label class="text-center">열 타입</label>
+          <select class="custom-select" name="column_type">
+            <option selected value="TEXT">TEXT</option>
+            <!-- <option value="INT">INT</option>
+            <option value="DATE">DATE</option> -->
           </select>
         </div>
         <div class="form-group">
