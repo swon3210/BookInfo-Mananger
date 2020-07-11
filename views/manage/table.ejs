@@ -13,24 +13,22 @@
             <thead>
               <tr>
                 <% for (let column in rows[0]) { %>
-                  <% if (column !== 'id') { %>
-                    <th class="text-center">
-                      <%= column %>
-                      <div>
-                        <a
-                          href="<%= `/edit/column/${table_name}/${column}` %>"
-                          class="text-primary"
-                          >수정</a
-                        >
-                        /
-                        <a
-                          href="<%= `/delete/column/${table_name}/${column}` %>"
-                          class="text-danger"
-                          >삭제</a
-                        >
-                      </div>
-                    </th>
-                  <% } %>
+                  <th class="text-center">
+                    <%= column %>
+                    <div>
+                      <a
+                        href="<%= `/edit/column/${table_name}/${column}` %>"
+                        class="text-primary"
+                        >수정</a
+                      >
+                      /
+                      <a
+                        href="<%= `/delete/column/${table_name}/${column}` %>"
+                        class="text-danger"
+                        >삭제</a
+                      >
+                    </div>
+                  </th>
                 <% } %>
                 <th class="text-center">
                   <a
@@ -45,11 +43,9 @@
               <% for (let row of rows) { %>
               <tr class="dynamic-table-addr0">
                 <% for (let cell in row) { %>
-                  <% if (cell !== 'id') { %>
-                    <td class="text-center">
-                      <%= row[cell] %>
-                    </td>
-                  <% } %>
+                  <td class="text-center">
+                    <%= row[cell] %>
+                  </td>
                 <% } %>
                 <td class="text-center">
                   <a

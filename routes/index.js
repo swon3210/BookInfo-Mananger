@@ -9,6 +9,7 @@ module.exports = function (app, conn) {
     conn.query(show_all_table_sql, function (err, results) {
       if (err) {
         console.log(err);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         for (let result of results) {
           tables.push(result['Tables_in_bookdatabase']);
@@ -29,6 +30,7 @@ module.exports = function (app, conn) {
     conn.query(select_all_sql, function (err, results) {
       if (err) {
         console.log(err);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         rows = results;
       }
@@ -62,7 +64,7 @@ module.exports = function (app, conn) {
     conn.query(create_table_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect('/input/table');
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         conn.query(insert_dummy_sql, function () {
           res.redirect(`/manage/table/${table_name}`);
@@ -81,7 +83,7 @@ module.exports = function (app, conn) {
     conn.query(show_columns_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/manage/table/${table_name}`);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         for (let result of results) {
           if (result['Field'] !== 'id') {
@@ -115,9 +117,10 @@ module.exports = function (app, conn) {
     conn.query(create_row_sql, function (err, results) {
       if (err) {
         console.log(err);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
+      } else {
         res.redirect(`/manage/table/${table_name}`);
       }
-      res.redirect(`/manage/table/${table_name}`);
     });
   });
 
@@ -135,16 +138,38 @@ module.exports = function (app, conn) {
     let table_name = req.params.table_name;
     let column_name = req.body.column_name;
     let column_type = req.body.column_type;
+    let key_type = req.body.key_type;
+    let reference_table = req.body.reference_table;
     let add_column_sql = `
       ALTER TABLE \`${table_name}\`
       ADD COLUMN \`${column_name}\` ${column_type};
     `;
+    let add_column_key_sql;
     conn.query(add_column_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/input/column/${table_name}`);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
-        res.redirect(`/manage/table/${table_name}`);
+        if (key_type === 'FOREIGN') {
+          if (column_type === 'INT') {
+            add_column_key_sql = `
+              ALTER TABLE \`${table_name}\`
+              ADD CONSTRAINT FK FOREIGN KEY(\`${column_name}\`) REFERENCES \`${reference_table}\`(id);
+            `;
+          } else {
+            return res.send('<script>alert("FOREIGN KEY 로 지정할 테이블은 INT 자료형이여야 합니다")</script>');
+          }
+          conn.query(add_column_key_sql, function (err2, results2) {
+            if (err2) {
+              console.log(err2);
+              res.send(`<script>alert(\`${err2.sqlMessage}\`)</script>`)
+            } else {
+              res.redirect(`/manage/table/${table_name}`);
+            }
+          })
+        } else {
+          res.redirect(`/manage/table/${table_name}`);
+        }
       }
     });
   });
@@ -171,7 +196,7 @@ module.exports = function (app, conn) {
     conn.query(update_table_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect('/manage/table_list');
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       }
       res.redirect('/manage/table_list');
     });
@@ -188,7 +213,7 @@ module.exports = function (app, conn) {
     conn.query(get_row_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/manage/table/${table_name}`);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         row = results[0];
         delete row.id;
@@ -222,8 +247,10 @@ module.exports = function (app, conn) {
     conn.query(update_row_sql, function (err, results) {
       if (err) {
         console.log(err);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
+      } else {
+        res.redirect(`/manage/table/${table_name}`);
       }
-      res.redirect(`/manage/table/${table_name}`);
     });
   });
 
@@ -231,7 +258,6 @@ module.exports = function (app, conn) {
   app.get('/edit/column/:table_name/:column_name', function (req, res) {
     let table_name = req.params.table_name;
     let column_name = req.params.column_name;
-
     res.render('index', {
       page: 'edit/column',
       table_name: table_name,
@@ -245,17 +271,37 @@ module.exports = function (app, conn) {
     let column_name = req.params.column_name;
     let updated_column_name = req.body.column_name;
     let updated_column_type = req.body.column_type;
+    let key_type = req.body.key_type;
+    let reference_table = req.body.reference_table;
     let update_column_sql = `
       ALTER TABLE \`${table_name}\` 
       CHANGE \`${column_name}\` \`${updated_column_name}\` ${updated_column_type};
     `;
+    let update_column_key_sql;
 
     conn.query(update_column_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/edit/column/${table_name}/${column_name}`);
+        res.send('<script>alert("열 정보 업데이트 실패")</script>')
       } else {
-        res.redirect(`/manage/table/${table_name}`);
+        if (key_type === 'FOREIGN') {
+          if (updated_column_type === 'INT') {
+            update_column_key_sql = `
+              ALTER TABLE \`${table_name}\`
+              ADD CONSTRAINT FK FOREIGN KEY(\`${updated_column_name}\`) REFERENCES \`${reference_table}\`(id);
+            `;
+          } else {
+            return res.send('<script>alert("FOREIGN KEY 로 지정할 테이블은 INT 자료형이여야 합니다")</script>');
+          }
+          conn.query(update_column_key_sql, function (err2, results2) {
+            if (err2) {
+              console.log(err2);
+              res.send(`<script>alert(\`${err2.sqlMessage}\`)</script>`)
+            } else {
+              res.redirect(`/manage/table/${table_name}`);
+            }
+          })
+        }
       }
     });
   });
@@ -271,7 +317,7 @@ module.exports = function (app, conn) {
     conn.query(table_delete_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect('/manage/table_list');
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         res.redirect('/manage/table_list');
       }
@@ -289,7 +335,7 @@ module.exports = function (app, conn) {
     conn.query(delete_row_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/manage/table/${table_name}`);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         res.redirect(`/manage/table/${table_name}`);
       }
@@ -306,19 +352,19 @@ module.exports = function (app, conn) {
     conn.query(remove_column_sql, function (err, results) {
       if (err) {
         console.log(err);
-        res.redirect(`/manage/table/${table_name}`);
+        res.send(`<script>alert(\`${err.sqlMessage}\`)</script>`);
       } else {
         res.redirect(`/manage/table/${table_name}`);
       }
     });
   });
 
+  /* ---------------------------------------------------------- RELATE */
+
   /* ---------------------------------------------------------- INQUIRE */
 
   // 조회 페이지 -------------- 여기서부터는 본인이 직접 
   app.get('/inquire/book', function (req, res) {
-
-
     res.render('index', {
       page: 'inquire/book',
       page_name: '페이지 이름',
